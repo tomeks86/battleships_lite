@@ -15,27 +15,22 @@ public class Server {
         clients = new ArrayList<>();
     }
 
-    public void start() {
+    public void start() throws IOException {
+        while (clients.size() < 2)
+            acceptClients();
         new Thread(() -> {
-            while (true) {
-                try {
-                    acceptClients();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            while (clients.size() == 2) {
+                
             }
         }).start();
     }
 
     private void acceptClients() throws IOException {
-        Socket socket = serverSocket.accept();
-        Client client = new Client(socket);
-        clients.add(client);
-        new Thread(() -> {
-            while (client.hasMessage()) {
-                String fromClient = client.getMessage();
-                client.sendMessage(fromClient);
-            }
-        }).start();
+        if (clients.size() < 2) {
+            Socket socket = serverSocket.accept();
+            Client client = new Client(socket);
+            clients.add(client);
+            client.sendMessage("hi");
+        }
     }
 }
