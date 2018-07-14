@@ -22,7 +22,8 @@ public class Server {
             while (clients.connected()) {
                 String message = clients.readFromActive();
                 clients.sendToInactive(message);
-                clients.switchActive();
+                if (message.startsWith(" "))
+                    clients.switchActive();
             }
         }).start();
     }
