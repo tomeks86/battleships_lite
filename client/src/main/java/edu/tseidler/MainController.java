@@ -1,8 +1,9 @@
 package edu.tseidler;
 
 import javafx.application.Platform;
-import javafx.event .ActionEvent;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
@@ -16,6 +17,8 @@ public class MainController {
     private Label messageReceived;
     @FXML
     private TextField messageToSend;
+    @FXML
+    private Button send;
 
     private Socket socket;
     private PrintWriter socketWriter;
@@ -28,6 +31,10 @@ public class MainController {
         final Thread socketListeningThread = new Thread(() -> {
             while (socketReader.hasNext()) {
                 String message = socketReader.nextLine();
+                if (send.isDisable() &&
+                        (message.startsWith(Messages.START.name()) || message.startsWith(Messages.CHANGE.name()))) {
+                    send.setDisable(false);
+                }
                 Platform.runLater(() ->
                         messageReceived.setText(message));
             }
@@ -38,6 +45,9 @@ public class MainController {
 
     public void sendMessage(ActionEvent actionEvent) {
         String message = messageToSend.getText();
+        if (message.startsWith(Messages.CHANGE.name())) {
+            send.setDisable(true);
+        }
         socketWriter.println(message);
         socketWriter.flush();
     }

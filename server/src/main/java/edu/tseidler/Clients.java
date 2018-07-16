@@ -25,7 +25,7 @@ class Clients {
     void addClientForSocket(Socket socket) throws IOException {
         final Client client = new Client(socket, status);
         clientList.add(client);
-        client.sendMessage("hello");
+        client.sendMessage(Messages.HELLO.toString());
         status = status.other();
     }
 

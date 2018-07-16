@@ -17,12 +17,12 @@ public class Server {
         while (clients.notComplete())
             acceptClients();
         new Thread(() -> {
-            clients.sendToActive("START");
-            clients.sendToInactive("WAIT");
+            clients.sendToActive(Messages.START.name());
+            clients.sendToInactive(Messages.WAIT.name());
             while (clients.connected()) {
                 String message = clients.readFromActive();
                 clients.sendToInactive(message);
-                if (message.startsWith(" "))
+                if (message.startsWith(Messages.CHANGE.name()))
                     clients.switchActive();
             }
         }).start();
